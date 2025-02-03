@@ -1,6 +1,7 @@
 # Agent Runner
 
 A web application that allows you to run automated browser tasks using AI. The application consists of a Flask backend and a React frontend.
+![Agent](./agent.png)
 
 ## Features
 
