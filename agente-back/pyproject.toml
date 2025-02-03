@@ -1,0 +1,14 @@
+[project]
+name = "agente"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "langchain-openai",
+    "browser-use",
+    "python-dotenv",
+    "asyncio",
+    "flask",
+    "flask-cors",
+]
