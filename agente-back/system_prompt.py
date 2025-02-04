@@ -7,7 +7,6 @@ class MySystemPrompt(SystemPrompt):
 
         # Add your custom rules
         new_rules = """
-            1 - Reject cookies, unless it's not possible to continue without accepting them.
             2 - Don't hallucinate.
             3 - MOST IMPORTANT RULE:
                 Always try to limit the number of requests you make, otherwise, the website will block us!

@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)  
 
 async def run_agent(api_key: str, task: str):
-    open_ai_llm = ChatOpenAI(model="gpt-4o-mini", openai_api_key=api_key)
+    open_ai_llm = ChatOpenAI(model="gpt-4o", openai_api_key=api_key)
     agent = Agent(
         task=task,
         llm=open_ai_llm,
