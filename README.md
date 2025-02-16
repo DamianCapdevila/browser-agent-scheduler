@@ -1,6 +1,10 @@
 # Browser Agent Scheduler
 
-Schedule automated browser tasks with AI. A powerful tool that lets you automate web interactions using natural language.
+Schedule multiple automated browser tasks with AI. A powerful tool that lets you automate web interactions using natural language.
+
+![Browser Agent Overview](./images/browser-agent.png)
+
+![Browser Agent Schedule Task](./images/browser-agent-schedule-task.png)
 
 ## Features
 
