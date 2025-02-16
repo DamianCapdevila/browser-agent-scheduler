@@ -11,4 +11,6 @@ dependencies = [
     "asyncio",
     "flask",
     "flask-cors",
+    "APScheduler",  # Add this line
+    "pytz",         # Add this line
 ]
