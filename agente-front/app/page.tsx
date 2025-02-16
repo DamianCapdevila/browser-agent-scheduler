@@ -6,6 +6,8 @@ import { Plus } from "lucide-react"
 import { TaskDialog } from "@/components/task-dialog"
 import { TaskList } from "@/components/task-list"
 import { Task } from "@/app/types/task"
+import { Layout } from "@/components/layout"
+import { SetupInstructions } from "@/components/setup-instructions"
 
 export default function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -92,28 +94,32 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Task Dashboard</h1>
-        <Button onClick={() => setIsDialogOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Task
-        </Button>
+    <Layout>
+      <div className="container mx-auto px-4 space-y-8">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold">Tasks</h2>
+          <Button onClick={() => setIsDialogOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Task
+          </Button>
+        </div>
+
+        <TaskList 
+          tasks={tasks}
+          isLoading={isLoading}
+          onDelete={handleDeleteTask}
+          onEdit={handleEditTask}
+        />
+
+        <SetupInstructions />
+
+        <TaskDialog 
+          open={isDialogOpen}
+          onOpenChange={handleDialogClose}
+          onSubmit={handleSubmitTask}
+          initialTask={selectedTask}
+        />
       </div>
-
-      <TaskList 
-        tasks={tasks}
-        isLoading={isLoading}
-        onDelete={handleDeleteTask}
-        onEdit={handleEditTask}
-      />
-
-      <TaskDialog 
-        open={isDialogOpen}
-        onOpenChange={handleDialogClose}
-        onSubmit={handleSubmitTask}
-        initialTask={selectedTask}
-      />
-    </main>
+    </Layout>
   )
 }
