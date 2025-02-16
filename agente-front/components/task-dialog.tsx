@@ -312,7 +312,7 @@ export function TaskDialog({
           <Button 
             className="w-full"
             onClick={handleSubmit}
-            disabled={isLoading || !scheduledDate || !scheduledTime || !apiKey || !task}
+            disabled={isLoading || !scheduledDate || !scheduledTime || (!hasStoredKey && !apiKey) || !task}
           >
             {isLoading ? (
               <>
