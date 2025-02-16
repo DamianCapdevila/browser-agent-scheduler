@@ -15,10 +15,10 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { CalendarIcon, Clock, Loader2 } from "lucide-react"
+import { CalendarIcon, Clock, Loader2, AlertCircle } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 import { Task } from "@/app/types/task"
-import { getStoredApiKey, saveApiKey } from "@/lib/api-key"
+import { getStoredApiKey, saveApiKey, clearApiKey, checkApiKey } from "@/lib/api-key"
 
 interface TaskDialogProps {
   open: boolean
@@ -41,14 +41,12 @@ export function TaskDialog({
   const [scheduledDate, setScheduledDate] = useState<Date>()
   const [scheduledTime, setScheduledTime] = useState("")
   const timeInputRef = useRef<HTMLInputElement>(null)
+  const [hasStoredKey, setHasStoredKey] = useState(false)
 
   // Load stored API key on component mount
   useEffect(() => {
-    const storedApiKey = getStoredApiKey();
-    if (storedApiKey) {
-      setApiKey(storedApiKey);
-    }
-  }, []);
+    setHasStoredKey(checkApiKey())
+  }, [])
 
   // Reset form when dialog opens/closes
   useEffect(() => {
@@ -110,10 +108,30 @@ export function TaskDialog({
   }, [open, initialTask])
 
   const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newApiKey = e.target.value;
-    setApiKey(newApiKey);
-    saveApiKey(newApiKey);
-  };
+    setApiKey(e.target.value)
+  }
+
+  const handleApiKeySave = () => {
+    if (apiKey) {
+      saveApiKey(apiKey)
+      setHasStoredKey(true)
+      setApiKey("")
+    }
+  }
+
+  const handleApiKeyEdit = () => {
+    const storedKey = getStoredApiKey()
+    if (storedKey) {
+      setApiKey(storedKey)
+      setHasStoredKey(false)
+    }
+  }
+
+  const handleApiKeyDelete = () => {
+    clearApiKey()
+    setHasStoredKey(false)
+    setApiKey("")
+  }
 
   const handleDateSelect = (date: Date | undefined) => {
     setScheduledDate(date)
@@ -135,7 +153,9 @@ export function TaskDialog({
       if (!scheduledTime) {
         throw new Error("Please select a time")
       }
-      if (!apiKey) {
+      
+      const storedApiKey = getStoredApiKey()
+      if (!storedApiKey && !apiKey) {
         throw new Error("Please enter your API key")
       }
       if (!task) {
@@ -152,7 +172,7 @@ export function TaskDialog({
 
       const newTask: Task = {
         id: initialTask?.id || crypto.randomUUID(),
-        apiKey,
+        apiKey: storedApiKey || apiKey,
         task,
         scheduledTime: scheduledDateTime.toISOString(),
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -182,19 +202,46 @@ export function TaskDialog({
         </DialogHeader>
         
         <div className="space-y-4">
-          <div className="space-y-2">
-            <h3 className="text-sm font-semibold">OpenAI API Key</h3>
-            <Input
-              type="password"
-              placeholder="Enter your API key"
-              value={apiKey}
-              onChange={handleApiKeyChange}
-              disabled={isLoading}
-            />
-            <p className="text-xs text-muted-foreground">
-              Your API key will be saved securely in your browser for future use.
-            </p>
-          </div>
+          {!hasStoredKey ? (
+            <div className="space-y-2">
+              <Label htmlFor="apiKey">OpenAI API Key</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="apiKey"
+                  value={apiKey}
+                  onChange={handleApiKeyChange}
+                  type="password"
+                  placeholder="sk-..."
+                />
+                <Button onClick={handleApiKeySave} disabled={!apiKey}>
+                  Save
+                </Button>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-yellow-600">
+                <AlertCircle className="h-4 w-4" />
+                <span>
+                  Your API key will be stored in your browser's local storage. You can edit or delete it at any time.
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">OpenAI API key stored in your browser.</span>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm" onClick={handleApiKeyEdit}>
+                  Edit
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleApiKeyDelete}
+                  className="text-red-500 hover:text-red-500 hover:border-red-500"
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+          )}
           
           <div className="space-y-2">
             <h3 className="text-sm font-semibold">Task for the Agent</h3>
