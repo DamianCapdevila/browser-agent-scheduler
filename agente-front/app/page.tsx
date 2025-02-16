@@ -16,7 +16,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { CalendarIcon, Clock, Loader2 } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 export default function Home() {
   const [apiKey, setApiKey] = useState("")
@@ -29,6 +29,17 @@ export default function Home() {
   const [scheduledTime, setScheduledTime] = useState("")
   const [jobId, setJobId] = useState<string | null>(null)
   const [isPolling, setIsPolling] = useState(false)
+  const timeInputRef = useRef<HTMLInputElement>(null)
+
+  const handleDateSelect = (date: Date | undefined) => {
+    setScheduledDate(date)
+    // Focus the time input after date selection
+    if (date) {
+      setTimeout(() => {
+        timeInputRef.current?.focus()
+      }, 100)
+    }
+  }
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -79,7 +90,7 @@ export default function Home() {
     };
 
     if (isPolling && jobId) {
-      intervalId = setInterval(pollTaskStatus, 2000);
+      intervalId = setInterval(pollTaskStatus, 3000);
     }
 
     return () => {
@@ -108,7 +119,7 @@ export default function Home() {
       }
 
       const endpoint = isScheduled ? "http://localhost:5000/schedule" : "http://localhost:5000/run"
-      
+
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
@@ -121,13 +132,13 @@ export default function Home() {
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         }),
       })
-      
+
       const data = await response.json()
-      
+
       if (!response.ok) {
         throw new Error(data.error || "Something went wrong")
       }
-      
+
       if (isScheduled) {
         setResult(data.message)
         setJobId(data.job_id)
@@ -149,7 +160,7 @@ export default function Home() {
     <main className="container mx-auto p-4 max-w-md">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Agent Runner</CardTitle>
+          <CardTitle className="text-2xl text-center">Browser Agent Scheduler</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -162,9 +173,9 @@ export default function Home() {
               disabled={isLoading}
             />
           </div>
-          
+
           <div className="space-y-2">
-            <h3 className="text-sm font-medium">Task for the Agent</h3>
+            <h3 className="text-sm font-medium">Task</h3>
             <Textarea
               placeholder="Whatever you want!"
               value={task}
@@ -205,7 +216,7 @@ export default function Home() {
                     <Calendar
                       mode="single"
                       selected={scheduledDate}
-                      onSelect={setScheduledDate}
+                      onSelect={handleDateSelect}
                       initialFocus
                       disabled={(date) => {
                         const today = new Date()
@@ -225,30 +236,26 @@ export default function Home() {
                     onChange={(e) => setScheduledTime(e.target.value)}
                     className="w-[120px]"
                     disabled={isLoading}
+                    ref={timeInputRef}
                   />
                 </div>
               </div>
-              
+
               <div className="text-sm text-muted-foreground">
                 Timezone: {timezone}
               </div>
             </div>
           )}
 
-          <Button 
+          <Button
             className="w-full"
             onClick={handleSubmit}
             disabled={isLoading || (isScheduled && (!scheduledDate || !scheduledTime))}
           >
-            {isLoading && !isScheduled ? (
+            {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Running...
-              </>
-            ) : isLoading && isScheduled ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Task is running...
+                {isScheduled ? "Scheduling task..." : "Running..."}
               </>
             ) : (
               isScheduled ? "Schedule Task" : "Run Agent"
