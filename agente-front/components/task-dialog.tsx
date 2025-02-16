@@ -183,7 +183,7 @@ export function TaskDialog({
         
         <div className="space-y-4">
           <div className="space-y-2">
-            <h3 className="text-sm font-medium">OpenAI API Key</h3>
+            <h3 className="text-sm font-semibold">OpenAI API Key</h3>
             <Input
               type="password"
               placeholder="Enter your API key"
@@ -197,7 +197,7 @@ export function TaskDialog({
           </div>
           
           <div className="space-y-2">
-            <h3 className="text-sm font-medium">Task for the Agent</h3>
+            <h3 className="text-sm font-semibold">Task for the Agent</h3>
             <Textarea
               placeholder="Whatever you want!"
               value={task}
@@ -207,48 +207,53 @@ export function TaskDialog({
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-4">
             <div className="grid grid-cols-[1fr,auto] gap-4">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !scheduledDate && "text-muted-foreground"
-                    )}
-                    disabled={isLoading}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {scheduledDate ? format(scheduledDate, "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={scheduledDate}
-                    onSelect={handleDateSelect}
-                    initialFocus
-                    disabled={(date) => {
-                      const today = new Date()
-                      today.setHours(0, 0, 0, 0)
-                      date.setHours(0, 0, 0, 0)
-                      return date < today
-                    }}
-                  />
-                </PopoverContent>
-              </Popover>
+              <div className="space-y-2">
+                <Label className="text-sm font-semibold">Date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !scheduledDate && "text-muted-foreground"
+                      )}
+                      disabled={isLoading}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {scheduledDate ? format(scheduledDate, "PPP") : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={scheduledDate}
+                      onSelect={handleDateSelect}
+                      initialFocus
+                      disabled={(date) => {
+                        const today = new Date()
+                        today.setHours(0, 0, 0, 0)
+                        date.setHours(0, 0, 0, 0)
+                        return date < today
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
 
-              <div className="flex items-center space-x-2 min-w-[140px]">
-                {/* <Clock className="h-4 w-4 text-muted-foreground" /> */}
-                <Input
-                  type="time"
-                  value={scheduledTime}
-                  onChange={(e) => setScheduledTime(e.target.value)}
-                  className="w-full"
-                  disabled={isLoading}
-                  ref={timeInputRef}
-                />
+              <div className="space-y-2 min-w-[140px]">
+                <Label className="text-sm font-semibold">Time</Label>
+                <div className="flex items-center space-x-2">
+                  <Input
+                    type="time"
+                    value={scheduledTime}
+                    onChange={(e) => setScheduledTime(e.target.value)}
+                    className="w-full"
+                    disabled={isLoading}
+                    ref={timeInputRef}
+                  />
+                </div>
               </div>
             </div>
             
