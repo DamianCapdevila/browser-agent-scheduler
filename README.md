@@ -1,80 +1,73 @@
-# Agent Runner
+# Browser Agent Scheduler
 
-A web application that allows you to run automated browser tasks using AI. The application consists of a Flask backend and a React frontend.
-![Agent](./agent.png)
+Schedule automated browser tasks with AI. A powerful tool that lets you automate web interactions using natural language.
 
 ## Features
 
-- Execute automated browser tasks using OpenAI's GPT models
-- Simple and intuitive user interface
-- Configurable OpenAI API key
-- Real-time task execution feedback
+- 🤖 Natural Language Task Creation
+- 📅 Task Scheduling
+- 🌐 Browser Automation
+- 🌙 Dark/Light Mode Support
+- 📱 Responsive Design
+- 🔒 Secure API Key Management
 
-## Prerequisites
+## Local Setup
 
-- Python 3.12 or higher
-- Node.js and npm
-- OpenAI API key
+### Requirements
 
-## Setup and Running
+Python 3.8 or higher, uv package manager (`pip install uv`), Node.js 18 or higher, pnpm package manager, Git
 
-### Backend Setup
+### Installation Steps
 
-1. Navigate to the backend directory:
+1. Clone the Repository
 ```bash
-cd agente-back
+git clone https://github.com/DamianCapdevila/agente.git
 ```
 
-2. Install dependencies using uv:
+2. Start the Backend
 ```bash
+cd agente/agente-back
+# Install dependencies using uv
 uv pip install -r pyproject.toml
-```
-
-3. Run the Flask server:
-```bash
+# Run the Flask server
 uv run agente.py
 ```
+The backend will start on http://localhost:5000
 
-The backend will start on `http://localhost:5000`
-
-### Frontend Setup
-
-1. Navigate to the frontend directory:
+3. Start the Frontend
 ```bash
-cd agente-front
-```
-
-2. Install dependencies:
-```bash
+cd agente/agente-front
 pnpm install
+pnpm dev
 ```
+The frontend will start on http://localhost:3000
 
-3. Start the development server:
-```bash
-npm run dev
-```
+## Architecture
 
-The frontend will be available at `http://localhost:5173`
+The project consists of two main components:
 
-## Usage
+### Frontend
+- Built with Next.js 15
+- Uses shadcn/ui components
+- Implements a responsive and accessible UI
+- Features dark/light mode theming
+- Stores API keys securely in the browser
 
-1. Open your browser and go to `http://localhost:5173`
-2. Enter your OpenAI API key
-3. Write your task description
-4. Click "Run Agent" to execute the task
+### Backend
+- Flask-based API
+- Implements task scheduling with APScheduler
+- Integrates with OpenAI's GPT-4 for task interpretation
+- Provides browser automation capabilities using [browser-use](https://github.com/browser-use/browser-use)
 
-## Project Structure
+## Need Help?
 
-```
-agente/
-├── agente-back/         # Flask backend
-│   ├── agent.py        # Main backend application
-│   └── system_prompt.py # System prompt configuration
-└── agente-front/        # React frontend
-    └── src/
-        ├── App.jsx     # Main React component
-        └── App.css     # Styles
-```
+If you encounter any issues running the project, feel free to:
+- Connect with me on [LinkedIn](https://linkedin.com/in/damiancapdevila)
+- Email me at [contact@damiancapdevila.com](mailto:contact@damiancapdevila.com)
+
+## License
+
+[MIT License](LICENSE)
 
 ## Citations
 
@@ -89,3 +82,6 @@ This project uses the Browser Use library:
   url = {https://github.com/browser-use/browser-use}
 }
 ```
+
+---
+Made by [Damián Capdevila](https://linkedin.com/in/damiancapdevila)
