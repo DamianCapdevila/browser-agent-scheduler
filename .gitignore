@@ -175,3 +175,8 @@ cython_debug/
 
 #WebBrowse
 agent_history.gif
+
+#Frontend
+agente-front/node_modules/
+agente-front/dist/
+agente-front/.env
