@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Calendar } from "@/components/ui/calendar"
-import { Switch } from "@/components/ui/switch"
 import {
   Popover,
   PopoverContent,
@@ -15,7 +14,7 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { CalendarIcon, Clock, Loader2, AlertCircle } from "lucide-react"
+import { CalendarIcon, Loader2, AlertCircle } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 import { Task } from "@/app/types/task"
 import { getStoredApiKey, saveApiKey, clearApiKey, checkApiKey } from "@/lib/api-key"
@@ -37,7 +36,6 @@ export function TaskDialog({
   const [task, setTask] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [isScheduled, setIsScheduled] = useState(true)
   const [scheduledDate, setScheduledDate] = useState<Date>()
   const [scheduledTime, setScheduledTime] = useState("")
   const timeInputRef = useRef<HTMLInputElement>(null)
@@ -220,7 +218,7 @@ export function TaskDialog({
               <div className="flex items-center gap-2 text-sm text-yellow-600">
                 <AlertCircle className="h-4 w-4" />
                 <span>
-                  Your API key will be stored in your browser's local storage. You can edit or delete it at any time.
+                  Your API key will be stored in your browser&apos;s local storage. You can edit or delete it at any time.
                 </span>
               </div>
             </div>

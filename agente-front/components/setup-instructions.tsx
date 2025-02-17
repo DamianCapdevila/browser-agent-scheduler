@@ -107,7 +107,7 @@ export function SetupInstructions() {
           <div className="border border-primary/20 bg-primary/5 p-6 rounded-lg text-center">
             <h4 className="font-semibold text-primary mb-2">Having trouble running this?</h4>
             <p className="text-sm text-muted-foreground mb-4">
-              I'm here to help! Don't hesitate to reach out:
+              I&apos;m here to help! Don&apos;t hesitate to reach out:
             </p>
             <div className="flex justify-center gap-4">
               <a
