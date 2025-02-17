@@ -37,7 +37,6 @@ export function TaskDialog({
   const [task, setTask] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [isScheduled, setIsScheduled] = useState(true)
   const [scheduledDate, setScheduledDate] = useState<Date>()
   const [scheduledTime, setScheduledTime] = useState("")
   const timeInputRef = useRef<HTMLInputElement>(null)
@@ -220,7 +219,7 @@ export function TaskDialog({
               <div className="flex items-center gap-2 text-sm text-yellow-600">
                 <AlertCircle className="h-4 w-4" />
                 <span>
-                  Your API key will be stored in your browser's local storage. You can edit or delete it at any time.
+                  Your API key will be stored in your browser&apos;s local storage. You can edit or delete it at any time.
                 </span>
               </div>
             </div>

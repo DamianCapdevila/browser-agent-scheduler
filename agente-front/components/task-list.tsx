@@ -61,7 +61,7 @@ export function TaskList({ tasks, isLoading, onDelete, onEdit }: TaskListProps) 
     return (
       <Alert>
         <AlertDescription>
-          No tasks scheduled. Click the "New Task" button to create one.
+          No tasks scheduled. Click the &quot;New Task&quot; button to create one.
         </AlertDescription>
       </Alert>
     )
