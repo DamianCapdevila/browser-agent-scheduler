@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Calendar } from "@/components/ui/calendar"
-import { Switch } from "@/components/ui/switch"
 import {
   Popover,
   PopoverContent,
@@ -15,7 +14,7 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { CalendarIcon, Clock, Loader2, AlertCircle } from "lucide-react"
+import { CalendarIcon, Loader2, AlertCircle } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 import { Task } from "@/app/types/task"
 import { getStoredApiKey, saveApiKey, clearApiKey, checkApiKey } from "@/lib/api-key"
