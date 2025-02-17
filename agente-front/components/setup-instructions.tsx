@@ -30,22 +30,22 @@ export function SetupInstructions() {
     <Collapsible
       open={isOpen}
       onOpenChange={handleToggle}
-      className="rounded-lg border bg-card text-card-foreground shadow-sm"
+      className="w-full rounded-lg border bg-card text-card-foreground shadow-sm"
     >
-      <div className="p-6">
+      <div className="px-4 sm:px-6 py-4">
         <CollapsibleTrigger asChild>
           <Button
             variant="ghost"
             className="w-full flex items-center justify-between p-0 hover:bg-transparent"
           >
-            <div className="flex flex-col items-start space-y-1.5">
-              <h3 className="text-2xl font-semibold">Local Setup Instructions</h3>
-              <p className="text-sm text-muted-foreground text-left">
+            <div className="flex flex-col items-start space-y-1 min-w-0">
+              <h3 className="text-xl sm:text-2xl font-semibold leading-none tracking-tight">Local Setup Instructions</h3>
+              <p className="text-sm text-muted-foreground break-words line-clamp-2 w-full pr-6">
                 Follow these steps to run the Browser Agent Scheduler locally
               </p>
             </div>
             <ChevronDown
-              className={`h-4 w-4 transition-transform duration-200 ${
+              className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
                 isOpen ? "transform rotate-180" : ""
               }`}
             />
@@ -54,27 +54,31 @@ export function SetupInstructions() {
       </div>
 
       <CollapsibleContent>
-        <div className="px-6 pb-6 space-y-6">
+        <div className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-4">
           <div className="space-y-4">
             <div>
-              <h4 className="font-medium mb-2 flex items-center">
+              <h4 className="font-medium mb-2 flex items-center text-base">
                 <Github className="mr-2 h-4 w-4" />
                 1. Clone the Repository
               </h4>
-              <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto">
-                <code>git clone https://github.com/DamianCapdevila/browser-agent-scheduler.git</code>
-              </pre>
+              <div className="relative">
+                <pre className="bg-muted p-3 rounded-lg text-sm overflow-x-auto scrollbar-thin">
+                  <code>git clone https://github.com/DamianCapdevila/browser-agent-scheduler.git</code>
+                </pre>
+              </div>
             </div>
 
             <div>
-              <h4 className="font-medium mb-2 flex items-center">
+              <h4 className="font-medium mb-2 flex items-center text-base">
                 <Terminal className="mr-2 h-4 w-4" />
                 2. Start the Backend
               </h4>
               <div className="space-y-2">
-                <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto">
-                  <code>cd agente/agente-back{"\n"}# Install dependencies using uv{"\n"}uv pip install -r pyproject.toml{"\n"}# Run the Flask server{"\n"}uv run agente.py</code>
-                </pre>
+                <div className="relative">
+                  <pre className="bg-muted p-3 rounded-lg text-sm overflow-x-auto scrollbar-thin">
+                    <code>cd agente/agente-back{"\n"}# Install dependencies using uv{"\n"}uv pip install -r pyproject.toml{"\n"}# Run the Flask server{"\n"}uv run agente.py</code>
+                  </pre>
+                </div>
                 <p className="text-sm text-muted-foreground">
                   The backend will start on http://localhost:5000
                 </p>
@@ -82,14 +86,16 @@ export function SetupInstructions() {
             </div>
 
             <div>
-              <h4 className="font-medium mb-2 flex items-center">
+              <h4 className="font-medium mb-2 flex items-center text-base">
                 <Chrome className="mr-2 h-4 w-4" />
                 3. Start the Frontend
               </h4>
               <div className="space-y-2">
-                <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto">
-                  <code>cd agente/agente-front{"\n"}pnpm install{"\n"}pnpm dev</code>
-                </pre>
+                <div className="relative">
+                  <pre className="bg-muted p-3 rounded-lg text-sm overflow-x-auto scrollbar-thin">
+                    <code>cd agente/agente-front{"\n"}pnpm install{"\n"}pnpm dev</code>
+                  </pre>
+                </div>
                 <p className="text-sm text-muted-foreground">
                   The frontend will start on http://localhost:3000
                 </p>
@@ -97,15 +103,15 @@ export function SetupInstructions() {
             </div>
           </div>
 
-          <div className="bg-muted p-4 rounded-lg">
-            <p className="text-sm font-medium">Requirements:</p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Python 3.8 or higher, uv package manager (<code className="text-xs bg-background px-1 py-0.5 rounded">pip install uv</code>), Node.js 18 or higher, pnpm package manager, Git
+          <div className="bg-muted rounded-lg p-3 sm:p-4">
+            <p className="text-sm font-medium mb-2">Requirements:</p>
+            <p className="text-sm text-muted-foreground">
+              Python 3.8 or higher, uv package manager (<code className="text-xs bg-background px-1.5 py-0.5 rounded">pip install uv</code>), Node.js 18 or higher, pnpm package manager, Git
             </p>
           </div>
 
-          <div className="border border-primary/20 bg-primary/5 p-6 rounded-lg text-center">
-            <h4 className="font-semibold text-primary mb-2">Having trouble running this?</h4>
+          <div className="border border-primary/20 bg-primary/5 p-4 sm:p-6 rounded-lg">
+            <h4 className="font-semibold text-primary mb-2 text-base">Having trouble running this?</h4>
             <p className="text-sm text-muted-foreground mb-4">
               I&apos;m here to help! Don&apos;t hesitate to reach out:
             </p>

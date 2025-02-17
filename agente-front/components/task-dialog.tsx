@@ -192,7 +192,7 @@ export function TaskDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto sm:max-h-[85vh]">
         <DialogHeader>
           <DialogTitle>
             {initialTask ? "Edit Task" : "New Task"}
@@ -203,7 +203,7 @@ export function TaskDialog({
           {!hasStoredKey ? (
             <div className="space-y-2">
               <Label htmlFor="apiKey">OpenAI API Key</Label>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Input
                   id="apiKey"
                   value={apiKey}
@@ -211,29 +211,29 @@ export function TaskDialog({
                   type="password"
                   placeholder="sk-..."
                 />
-                <Button onClick={handleApiKeySave} disabled={!apiKey}>
+                <Button onClick={handleApiKeySave} disabled={!apiKey} className="sm:w-auto w-full">
                   Save
                 </Button>
               </div>
-              <div className="flex items-center gap-2 text-sm text-yellow-600">
-                <AlertCircle className="h-4 w-4" />
+              <div className="flex items-start gap-2 text-sm text-yellow-600">
+                <AlertCircle className="h-4 w-4 shrink-0 mt-1" />
                 <span>
                   Your API key will be stored in your browser&apos;s local storage. You can edit or delete it at any time.
                 </span>
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <span className="text-sm text-muted-foreground">OpenAI API key stored in your browser.</span>
-              <div className="space-x-2">
-                <Button variant="outline" size="sm" onClick={handleApiKeyEdit}>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={handleApiKeyEdit} className="flex-1 sm:flex-none">
                   Edit
                 </Button>
                 <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={handleApiKeyDelete}
-                  className="text-red-500 hover:text-red-500 hover:border-red-500"
+                  className="flex-1 sm:flex-none text-red-500 hover:text-red-500 hover:border-red-500"
                 >
                   Delete
                 </Button>
@@ -253,7 +253,7 @@ export function TaskDialog({
           </div>
 
           <div className="space-y-4">
-            <div className="grid grid-cols-[1fr,auto] gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr,auto] gap-4">
               <div className="space-y-2">
                 <Label className="text-sm font-semibold">Date</Label>
                 <Popover>
@@ -287,14 +287,14 @@ export function TaskDialog({
                 </Popover>
               </div>
 
-              <div className="space-y-2 min-w-[140px]">
+              <div className="space-y-2">
                 <Label className="text-sm font-semibold">Time</Label>
                 <div className="flex items-center space-x-2">
                   <Input
                     type="time"
                     value={scheduledTime}
                     onChange={(e) => setScheduledTime(e.target.value)}
-                    className="w-full"
+                    className="w-full min-w-[120px]"
                     disabled={isLoading}
                     ref={timeInputRef}
                   />

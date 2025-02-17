@@ -8,15 +8,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <header className="border-b">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Bot className="h-6 w-6" />
-            <h1 className="text-xl font-bold">Browser Agent Scheduler</h1>
+            <Bot className="h-5 w-5 sm:h-6 sm:w-6" />
+            <h1 className="text-lg sm:text-xl font-bold">
+              <span className="hidden sm:inline">Browser Agent Scheduler</span>
+              <span className="sm:hidden">Browser Agent</span>
+            </h1>
           </div>
           <ModeToggle />
         </div>
       </header>
 
       {/* Main content */}
-      <main className="flex-1 py-8">
+      <main className="flex-1 py-4 sm:py-8">
         {children}
       </main>
 
