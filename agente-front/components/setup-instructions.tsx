@@ -62,7 +62,7 @@ export function SetupInstructions() {
                 1. Clone the Repository
               </h4>
               <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto">
-                <code>git clone https://github.com/DamianCapdevila/agente.git</code>
+                <code>git clone https://github.com/DamianCapdevila/browser-agent-scheduler.git</code>
               </pre>
             </div>
 

@@ -8,6 +8,11 @@ import { TaskList } from "@/components/task-list"
 import { Task } from "@/app/types/task"
 import { Layout } from "@/components/layout"
 import { SetupInstructions } from "@/components/setup-instructions"
+import { DemoBanner } from "@/components/demo-banner"
+import { mockTasks } from "@/lib/mock-data"
+
+const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === "true"
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
 
 export default function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -17,6 +22,12 @@ export default function Dashboard() {
 
   // Fetch tasks on component mount
   useEffect(() => {
+    if (DEMO_MODE) {
+      setTasks(mockTasks)
+      setIsLoading(false)
+      return
+    }
+
     fetchTasks()
     const interval = setInterval(fetchTasks, 5000) // Poll every 5 seconds
     return () => clearInterval(interval)
@@ -24,7 +35,7 @@ export default function Dashboard() {
 
   const fetchTasks = async () => {
     try {
-      const response = await fetch('http://localhost:5000/tasks')
+      const response = await fetch(`${API_URL}/tasks`)
       const data = await response.json()
       setTasks(data)
     } catch (error) {
@@ -35,9 +46,20 @@ export default function Dashboard() {
   }
 
   const handleSubmitTask = async (task: Task) => {
+    if (DEMO_MODE) {
+      // Simulate task creation in demo mode
+      const newTask = {
+        ...task,
+        status: 'scheduled' as const,
+      }
+      setTasks([...tasks, newTask])
+      setIsDialogOpen(false)
+      return
+    }
+
     try {
       const isUpdate = Boolean(task.id && tasks.find(t => t.id === task.id));
-      const endpoint = isUpdate ? `http://localhost:5000/tasks/${task.id}` : 'http://localhost:5000/schedule';
+      const endpoint = isUpdate ? `${API_URL}/tasks/${task.id}` : `${API_URL}/schedule`;
       const method = isUpdate ? 'PUT' : 'POST';
 
       const response = await fetch(endpoint, {
@@ -63,13 +85,18 @@ export default function Dashboard() {
       setIsDialogOpen(false);
     } catch (error) {
       console.error(`Failed to ${task.id ? 'update' : 'add'} task:`, error);
-      throw error; // Re-throw to be handled by the dialog
+      throw error;
     }
   }
 
   const handleDeleteTask = async (taskId: string) => {
+    if (DEMO_MODE) {
+      setTasks(tasks.filter(task => task.id !== taskId))
+      return
+    }
+
     try {
-      const response = await fetch(`http://localhost:5000/tasks/${taskId}`, {
+      const response = await fetch(`${API_URL}/tasks/${taskId}`, {
         method: 'DELETE',
       })
 
@@ -96,6 +123,8 @@ export default function Dashboard() {
   return (
     <Layout>
       <div className="container mx-auto px-4 space-y-8">
+        {DEMO_MODE && <DemoBanner />}
+        
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold">Tasks</h2>
           <Button onClick={() => setIsDialogOpen(true)}>

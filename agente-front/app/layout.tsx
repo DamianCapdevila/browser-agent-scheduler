@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://browseragent.damiancapdevila.com'),
+  metadataBase: new URL('https://browser-agent-scheduler.vercel.app'),
   title: "Browser Agent Scheduler",
   description: "Schedule automated browser tasks with AI. A powerful tool that lets you automate web interactions using natural language.",
   keywords: "browser automation, AI automation, web tasks, task scheduler, OpenAI, browser agent",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://browseragent.damiancapdevila.com",
+    url: "https://browser-agent-scheduler.vercel.app",
     title: "Browser Agent Scheduler",
     description: "Schedule automated browser tasks with AI. A powerful tool that lets you automate web interactions using natural language.",
     siteName: "Browser Agent Scheduler",
