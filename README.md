@@ -3,6 +3,7 @@
 Schedule multiple automated browser tasks with AI. A powerful tool that lets you automate web interactions using natural language.
 
 
+
 ## Overview 
 ![Browser Agent Overview](./images/browser-agent.png)
 
