@@ -265,12 +265,20 @@ export function TaskDialog({
                         !scheduledDate && "text-muted-foreground"
                       )}
                       disabled={isLoading}
+                      type="button"
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {scheduledDate ? format(scheduledDate, "PPP") : "Pick a date"}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
+                  <PopoverContent 
+                    className="w-auto p-0" 
+                    align="start"
+                    side="bottom"
+                    sideOffset={4}
+                    alignOffset={0}
+                    avoidCollisions={false}
+                  >
                     <Calendar
                       mode="single"
                       selected={scheduledDate}
@@ -282,6 +290,7 @@ export function TaskDialog({
                         date.setHours(0, 0, 0, 0)
                         return date < today
                       }}
+                      className="rounded-md border shadow-sm"
                     />
                   </PopoverContent>
                 </Popover>
