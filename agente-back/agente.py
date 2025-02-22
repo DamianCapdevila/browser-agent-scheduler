@@ -92,9 +92,14 @@ async def run_agent(api_key: str, task: str):
             model="gpt-4o",
             openai_api_key=api_key
         )
+        planner = ChatOpenAI(
+            model="gpt-4o-mini",
+            openai_api_key=api_key
+        )
         agent = Agent(
             task=task,
             llm=llm,
+            planner_llm=planner,
             system_prompt_class=MySystemPrompt
         )
         result = await agent.run()
