@@ -1,6 +1,6 @@
 "use client"
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -197,6 +197,9 @@ export function TaskDialog({
           <DialogTitle>
             {initialTask ? "Edit Task" : "New Task"}
           </DialogTitle>
+          <DialogDescription>
+            Schedule a task to be executed by the browser agent.
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4">
