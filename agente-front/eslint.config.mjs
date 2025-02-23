@@ -1,29 +1,14 @@
-import globals from "globals";
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
-import pluginReact from "eslint-plugin-react";
-import pluginNext from "eslint-plugin-next";
+import { FlatCompat } from '@eslint/eslintrc'
 
-/** @type {import('eslint').Linter.Config[]} */
-export default [
-  // Recommended configurations
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
-  pluginReact.configs.flat.recommended,
-  pluginNext.configs.recommended,
-  // Custom overrides placed last
-  {
-    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-    languageOptions: { globals: globals.browser },
-    settings: {
-      react: {
-        version: "detect",
-      },
-    },
-    rules: {
-      // Disabling rules that cause issues
-      "react/react-in-jsx-scope": "off", // Not needed in React 17+
-      "react/prop-types": "off", // Disable prop-types check since you're using TypeScript
-    },
-  },
-];
+const compat = new FlatCompat({
+  // import.meta.dirname is available after Node.js v20.11.0
+  baseDirectory: import.meta.dirname,
+})
+
+const eslintConfig = [
+  ...compat.config({
+    extends: ['next/core-web-vitals', 'next/typescript'],
+  }),
+]
+
+export default eslintConfig
