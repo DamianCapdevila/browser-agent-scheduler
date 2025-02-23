@@ -51,6 +51,37 @@ export default function useAuth() {
     }
   }
 
+  const handleForgotPassword = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email,
+        {
+          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/change-password`
+        }
+      )
+      if (error) throw error
+      return { success: true, message: 'Check your email for the reset link! If you don\'t see it, check your spam folder.' }
+    } catch (error) {
+      if (error instanceof AuthError) {
+        return { success: false, message: error.message }
+      }
+      return { success: false, message: 'An unexpected error occurred during forgot password' }
+    } 
+  }
+
+  const handleChangePassword = async (email: string, password: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({ password })
+      if (error) throw error
+      router.push('/auth')
+      return { success: true, message: 'Password updated successfully' }
+    } catch (error) {
+      if (error instanceof AuthError) {
+        return { success: false, message: error.message }
+      }
+      return { success: false, message: 'An unexpected error occurred during change password' }
+    } 
+  }
+
   const handleSignOut = async () => {
     try {
       const { error } = await supabase.auth.signOut()
@@ -65,5 +96,5 @@ export default function useAuth() {
     }
   }
 
-  return { handleLogin, handleSignup, handleGitHubLogin, handleSignOut }
+  return { handleLogin, handleSignup, handleGitHubLogin, handleSignOut, handleForgotPassword, handleChangePassword }
 }

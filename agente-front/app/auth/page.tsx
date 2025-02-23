@@ -5,7 +5,7 @@ import { LoginForm } from "@/components/login-form"
 import useAuth from "@/lib/useAuth"
 
 export default function Auth() {
-  const { handleLogin, handleSignup, handleGitHubLogin } = useAuth()
+  const { handleLogin, handleSignup, handleGitHubLogin, handleForgotPassword } = useAuth()
 
   return (
     <Layout>
@@ -15,7 +15,7 @@ export default function Auth() {
             onLogin={handleLogin}
             onSignup={handleSignup}
             onGitHubLogin={handleGitHubLogin}
-            
+            onForgotPassword={handleForgotPassword}
           />
         </div>
       </div>

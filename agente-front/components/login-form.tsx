@@ -19,12 +19,14 @@ export function LoginForm({
   onLogin,
   onSignup,
   onGitHubLogin,
+  onForgotPassword,
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div"> & {
   onLogin: (email: string, password: string) => Promise<string | undefined>
   onSignup: (email: string, password: string) => Promise<{ success: boolean; message: string }>
   onGitHubLogin: () => void
+  onForgotPassword: (email: string) => Promise<{ success: boolean; message: string }>
 }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -51,6 +53,16 @@ export function LoginForm({
     setSuccess(null)
 
     const result = await onSignup(email, password)
+    if (result.success) {
+      setSuccess(result.message)
+    } else {
+      setError(result.message)
+    }
+    setIsLoading(false)
+  }
+
+  const handleForgotPasswordClick = async () => {
+    const result = await onForgotPassword(email)
     if (result.success) {
       setSuccess(result.message)
     } else {
@@ -91,20 +103,28 @@ export function LoginForm({
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
+            <div className="grid gap-2">
+                <div className="flex items-center">
+                  <Label htmlFor="password">Password</Label>
+                  <a
+                    href="#"
+                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                    onClick={handleForgotPasswordClick}
+                  >
+                    Forgot your password?
+                  </a>
+                </div>
+                <Input 
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                required
-              />
-            </div>
-            <Button 
-              type="submit" 
-              className="w-full" 
+                required/>
+              </div>
+            <Button
+              type="submit"
+              className="w-full"
               disabled={isLoading}
             >
               {isLoading ? "Loading..." : "Login"}
@@ -121,9 +141,9 @@ export function LoginForm({
             </Button>
             <div className="text-center text-sm">
               Don&apos;t have an account?{" "}
-              <Button 
-                variant="link" 
-                className="px-0" 
+              <Button
+                variant="link"
+                className="px-0"
                 onClick={handleSignupClick}
                 disabled={isLoading}
               >
