@@ -15,6 +15,7 @@ export default function Auth() {
             onLogin={handleLogin}
             onSignup={handleSignup}
             onGitHubLogin={handleGitHubLogin}
+            
           />
         </div>
       </div>
