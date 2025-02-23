@@ -27,6 +27,7 @@ export default function useAuth() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google'
       })
+      if (error) throw error
     } catch (error) {
       if (error instanceof AuthError) {
         console.error('Error logging in with Google:', error.message)
