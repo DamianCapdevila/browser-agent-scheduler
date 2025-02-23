@@ -2,7 +2,7 @@
 
 import { Layout } from "@/components/layout"
 import { LoginForm } from "@/components/login-form"
-import useAuth from "@/lib/useAuth"
+import useAuth from "@/hooks/useAuth"
 
 export default function Auth() {
   const { handleGitHubLogin, handleGoogleLogin } = useAuth()

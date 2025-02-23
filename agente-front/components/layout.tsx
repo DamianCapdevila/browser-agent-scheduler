@@ -1,7 +1,7 @@
 import { ModeToggle } from "@/components/mode-toggle"
 import { UserProfile } from "@/components/user-profile"
 import { Github, Linkedin, Bot } from "lucide-react"
-import { useUser } from "@/lib/useUser"
+import { useUser } from "@/hooks/useUser"
 
 export function Layout({ children }: { children: React.ReactNode }) {
 

@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import useAuth from "@/lib/useAuth"
+import useAuth from "@/hooks/useAuth"
 
 export function UserProfile({ userName, userImage }: { userName: string, userImage: string }) {
   const { handleSignOut } = useAuth()
