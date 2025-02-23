@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Github } from "lucide-react"
+import { Github, KeyRound } from "lucide-react"
 
 export function LoginForm({
   onGitHubLogin,
@@ -27,13 +27,16 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
+          <div className="flex items-center gap-2">
+            <KeyRound />
+            <CardTitle className="text-2xl">Login</CardTitle>
+          </div>
           <CardDescription>
             Hey there! Login to your account to continue.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4">
+          <form className="space-y-4 pb-2">
             <Button
               type="button"
               variant="outline"

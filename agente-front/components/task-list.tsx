@@ -60,7 +60,7 @@ export function TaskList({ tasks, isLoading, onDelete, onEdit }: TaskListProps) 
   if (tasks.length === 0) {
     return (
       <Alert>
-        <AlertDescription>
+        <AlertDescription className="text-gray-500">
           No tasks scheduled. Click the &quot;New Task&quot; button to create one.
         </AlertDescription>
       </Alert>
