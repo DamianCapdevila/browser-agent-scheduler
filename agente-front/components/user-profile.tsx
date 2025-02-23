@@ -26,7 +26,7 @@ export function UserProfile({ userName, userImage }: { userName: string, userIma
           Settings
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleSignOut}>
-          Sign Out
+          Logout
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
