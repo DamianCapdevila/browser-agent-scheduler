@@ -2,42 +2,52 @@
 
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { toast } from 'sonner'
+import { AuthError } from '@supabase/supabase-js'
 
 export default function useAuth() {
   const router = useRouter()
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const handleLogin = async (email: string, password: string) => {
     try {
-      setErrorMessage(null) // Clear previous errors
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) throw error
       router.push('/')
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'An unknown error occurred')
+      if (error instanceof AuthError) {
+        if (error.message === 'Invalid login credentials') {
+          return 'Invalid email or password. Please try again or sign up if you don\'t have an account.'
+        }
+        return error.message
+      }
+      return 'An unexpected error occurred during login'
     }
   }
 
   const handleSignup = async (email: string, password: string) => {
     try {
-      setErrorMessage(null)
       const { error } = await supabase.auth.signUp({ email, password })
       if (error) throw error
-      toast.success('Check your email for the confirmation link!')
+      return { success: true, message: 'Check your email for the confirmation link!' }
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'An unknown error occurred')
+      if (error instanceof AuthError) {
+        return { success: false, message: error.message }
+      }
+      return { success: false, message: 'An unexpected error occurred during sign up' }
     }
   }
 
   const handleGitHubLogin = async () => {
     try {
-      setErrorMessage(null)
-      const { error } = await supabase.auth.signInWithOAuth({ provider: 'github' })
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github'
+      })
       if (error) throw error
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'An unknown error occurred')
+      if (error instanceof AuthError) {
+        console.error('Error logging in with GitHub:', error.message)
+      } else {
+        console.error('An unexpected error occurred during GitHub login')
+      }
     }
   }
 
@@ -47,9 +57,13 @@ export default function useAuth() {
       if (error) throw error
       router.push('/auth')
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'An unknown error occurred')
+      if (error instanceof AuthError) {
+        console.error('Error signing out:', error.message)
+      } else {
+        console.error('An unexpected error occurred during sign out')
+      }
     }
   }
 
-  return { handleLogin, handleSignup, handleGitHubLogin, handleSignOut, errorMessage }
+  return { handleLogin, handleSignup, handleGitHubLogin, handleSignOut }
 }
