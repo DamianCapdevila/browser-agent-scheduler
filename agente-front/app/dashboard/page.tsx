@@ -9,7 +9,7 @@ import { Task } from "@/app/types/task"
 import { SetupInstructions } from "@/components/setup-instructions"
 import { DemoBanner } from "@/components/demo-banner"
 import { mockTasks } from "@/lib/mock-data"
-import { Layout } from "@/app/dashboard/layout"
+import { Layout } from "@/components/layout"
 
 const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === "true"
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"

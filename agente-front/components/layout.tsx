@@ -20,7 +20,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </div>
           <div className="flex items-center space-x-2">
             <ModeToggle />
-            <UserProfile userName={userName} userImage={userImage} />
+            {userName && <UserProfile userName={userName} userImage={userImage} />}
           </div>
         </div>
       </header>
