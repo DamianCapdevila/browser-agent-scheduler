@@ -10,7 +10,10 @@ export default function useAuth() {
   const handleGitHubLogin = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'github'
+        provider: 'github',
+        options: {
+          redirectTo: `${window.location.origin}`
+        }
       })
       if (error) throw error
     } catch (error) {
@@ -25,7 +28,10 @@ export default function useAuth() {
   const handleGoogleLogin = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google'
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}`
+        }
       })
       if (error) throw error
     } catch (error) {
