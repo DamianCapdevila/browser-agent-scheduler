@@ -45,9 +45,8 @@ export function SetupInstructions() {
               </p>
             </div>
             <ChevronDown
-              className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
-                isOpen ? "transform rotate-180" : ""
-              }`}
+              className={`h-4 w-4 shrink-0 transition-transform duration-200 ${isOpen ? "transform rotate-180" : ""
+                }`}
             />
           </Button>
         </CollapsibleTrigger>
@@ -59,41 +58,24 @@ export function SetupInstructions() {
             <div>
               <h4 className="font-medium mb-2 flex items-center text-base">
                 <Github className="mr-2 h-4 w-4" />
-                1. Clone the Repository
+                1. Clone the Frontend Repository
               </h4>
               <div className="relative">
                 <pre className="bg-muted p-3 rounded-lg text-sm overflow-x-auto scrollbar-thin">
-                  <code>git clone https://github.com/DamianCapdevila/browser-agent-scheduler.git</code>
+                  <code>git clone https://github.com/DamianCapdevila/browser-agent-scheduler-front.git</code>
                 </pre>
               </div>
             </div>
 
             <div>
               <h4 className="font-medium mb-2 flex items-center text-base">
-                <Terminal className="mr-2 h-4 w-4" />
-                2. Start the Backend
-              </h4>
-              <div className="space-y-2">
-                <div className="relative">
-                  <pre className="bg-muted p-3 rounded-lg text-sm overflow-x-auto scrollbar-thin">
-                    <code>cd agente/agente-back{"\n"}# Install dependencies using uv{"\n"}uv pip install -r pyproject.toml{"\n"}# Run the Flask server{"\n"}uv run agente.py</code>
-                  </pre>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  The backend will start on http://localhost:5000
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="font-medium mb-2 flex items-center text-base">
                 <Chrome className="mr-2 h-4 w-4" />
-                3. Start the Frontend
+                2. Start the Frontend
               </h4>
               <div className="space-y-2">
                 <div className="relative">
                   <pre className="bg-muted p-3 rounded-lg text-sm overflow-x-auto scrollbar-thin">
-                    <code>cd agente/agente-front{"\n"}pnpm install{"\n"}pnpm dev</code>
+                    <code>cd browser-agent-scheduler-front{"\n"}cd frontend{"\n"}pnpm install{"\n"}pnpm dev</code>
                   </pre>
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -102,6 +84,37 @@ export function SetupInstructions() {
               </div>
             </div>
           </div>
+          <div>
+
+          <div>
+              <h4 className="font-medium mb-2 flex items-center text-base">
+                <Github className="mr-2 h-4 w-4" />
+                3. Clone the Backend Repository
+              </h4>
+              <div className="relative">
+                <pre className="bg-muted p-3 rounded-lg text-sm overflow-x-auto scrollbar-thin">
+                  <code>git clone https://github.com/DamianCapdevila/browser-agent-scheduler-back.git</code>
+                </pre>
+              </div>
+            </div>
+
+
+            <h4 className="font-medium mb-2 flex items-center text-base">
+              <Terminal className="mr-2 h-4 w-4" />
+              4. Start the Backend
+            </h4>
+            <div className="space-y-2">
+              <div className="relative">
+                <pre className="bg-muted p-3 rounded-lg text-sm overflow-x-auto scrollbar-thin">
+                  <code>cd browser-agent-scheduler-back{"\n"}cd backend{"\n"}uv pip install -r pyproject.toml{"\n"}uv run agente.py</code>
+                </pre>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                The backend will start on http://localhost:5000
+              </p>
+            </div>
+          </div>
+
 
           <div className="bg-muted rounded-lg p-3 sm:p-4">
             <p className="text-sm font-medium mb-2">Requirements:</p>
@@ -111,8 +124,8 @@ export function SetupInstructions() {
           </div>
 
           <div className="border border-primary/20 bg-primary/5 p-4 sm:p-6 rounded-lg">
-            <h4 className="font-semibold text-primary mb-2 text-base">Having trouble running this?</h4>
-            <p className="text-sm text-muted-foreground mb-4">
+            <h4 className="flex justify-center font-semibold text-primary mb-2 text-base">Having trouble running this?</h4>
+            <p className="flex justify-center text-sm text-muted-foreground mb-4">
               I&apos;m here to help! Don&apos;t hesitate to reach out:
             </p>
             <div className="flex justify-center gap-4">

@@ -11,7 +11,7 @@ export function DemoBanner() {
         <AlertDescription className="text-yellow-600">
           This is a demo version with mock data. For full functionality, please{" "}
           <a
-            href="https://github.com/DamianCapdevila/browser-agent-scheduler#local-setup"
+            href="https://github.com/DamianCapdevila/browser-agent-scheduler-front#local-setup"
             target="_blank"
             rel="noopener noreferrer"
             className="font-medium text-yellow-500 hover:text-yellow-600 underline underline-offset-4"
