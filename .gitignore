@@ -15,7 +15,7 @@ downloads/
 eggs/
 .eggs/
 lib/
-!agente-front/lib/
+!frontend/lib/
 lib64/
 parts/
 sdist/
