@@ -30,7 +30,7 @@ export function SetupInstructions() {
     <Collapsible
       open={isOpen}
       onOpenChange={handleToggle}
-      className="w-full rounded-lg border bg-card text-card-foreground shadow-sm"
+      className="w-full rounded-lg border bg-card text-card-foreground shadow-sm pb-2 pt-2"
     >
       <div className="px-4 sm:px-6 py-4">
         <CollapsibleTrigger asChild>

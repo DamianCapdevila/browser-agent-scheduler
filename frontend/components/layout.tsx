@@ -1,7 +1,11 @@
 import { ModeToggle } from "@/components/mode-toggle"
+import { UserProfile } from "@/components/user-profile"
 import { Github, Linkedin, Bot } from "lucide-react"
+import { useUser } from "@/hooks/useUser"
 
 export function Layout({ children }: { children: React.ReactNode }) {
+
+  const { userName, userImage } = useUser()
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
@@ -14,7 +18,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <span className="sm:hidden">Browser Agent</span>
             </h1>
           </div>
-          <ModeToggle />
+          <div className="flex items-center space-x-2">
+            <ModeToggle />
+            {userName && <UserProfile userName={userName} userImage={userImage} />}
+          </div>
         </div>
       </header>
 
