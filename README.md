@@ -30,28 +30,33 @@ Python 3.8 or higher, uv package manager (`pip install uv`), Node.js 18 or highe
 
 ### Installation Steps
 
-1. Clone the Repository
+1. Clone the Frontend Repository
 ```bash
-git clone https://github.com/DamianCapdevila/agente.git
+git clone https://github.com/DamianCapdevila/browser-agent-scheduler-front.git
 ```
 
-2. Start the Backend
+2. Start the Frontend
 ```bash
-cd agente/agente-back
-# Install dependencies using uv
-uv pip install -r pyproject.toml
-# Run the Flask server
-uv run agente.py
-```
-The backend will start on http://localhost:5000
-
-3. Start the Frontend
-```bash
-cd agente/agente-front
+cd browser-agent-scheduler-front
+cd frontend
 pnpm install
 pnpm dev
 ```
 The frontend will start on http://localhost:3000
+
+3. Clone the Backend Repository
+```bash
+git clone https://github.com/DamianCapdevila/browser-agent-scheduler-back.git
+```
+
+4. Start the Backend
+```bash
+cd browser-agent-scheduler-back
+cd backend
+uv pip install -r pyproject.toml
+uv run agente.py
+```
+The backend will start on http://localhost:5000
 
 ## Architecture
 
@@ -67,7 +72,7 @@ The project consists of two main components:
 ### Backend
 - Flask-based API
 - Implements task scheduling with APScheduler
-- Integrates with OpenAI's GPT-4 for task interpretation
+- Integrates with OpenAI's GPT-4o for task interpretation
 - Provides browser automation capabilities using [browser-use](https://github.com/browser-use/browser-use)
 
 ## Need Help?
