@@ -6,6 +6,7 @@ import { Plus, Settings } from "lucide-react"
 import { TaskDialog } from "@/components/task-dialog"
 import { TaskList } from "@/components/task-list"
 import { Task } from "@/app/types/task"
+import { User } from "@/app/types/user"
 import { SetupInstructions } from "@/components/setup-instructions"
 import { DemoBanner } from "@/components/demo-banner"
 import { mockTasks } from "@/lib/mock-data"
@@ -25,14 +26,13 @@ import {
 } from "@/components/ui/alert-dialog"
 
 const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === "true"
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
 
 export default function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Task | undefined>()
   const [isLoading, setIsLoading] = useState(true)
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
@@ -42,7 +42,7 @@ export default function Dashboard() {
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser()
-      setUser(data.user)
+      setUser({ id: data.user?.id || "", name: data.user?.user_metadata?.name || "" })
 
       // Check if the user has an API key stored
       if (data.user) {
@@ -50,7 +50,7 @@ export default function Dashboard() {
           console.log("Checking API key for user:", data.user.id);
 
           // Correctly query from user_api_keys table
-          const { data: keyData, error } = await supabase
+          const { data: keyData } = await supabase
             .from('user_api_keys')
             .select('id')
             .eq('user_id', data.user.id)
@@ -82,7 +82,6 @@ export default function Dashboard() {
     if (user) {
       // Initial fetch
       fetchTasks()
-      setHasApiKey(hasApiKey)
       // Setup real-time subscription with optimized updates
       const taskSubscription = supabase
         .channel('tasks-changes')
@@ -284,7 +283,7 @@ export default function Dashboard() {
           apiKey={hasApiKey ? "API Key Available" : "API Key Not Available"}
           onSaveApiKey={handleSaveApiKey}
           onDeleteApiKey={handleDeleteApiKey}
-          userId={user?.id}
+          userId={user?.id || ""}
         />
 
         <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>

@@ -56,7 +56,7 @@ export function SettingsDialog({
       const encryptedData: EncryptedData = await encryptApiKey(apiKey, passphrase);
 
       // Check if the key already exists
-      const { data: existingKey, error: existingKeyError } = await supabase
+      const { data: existingKey } = await supabase
         .from('user_api_keys')
         .select('*')
         .eq('user_id', userId)
