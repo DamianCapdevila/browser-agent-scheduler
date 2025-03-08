@@ -16,129 +16,76 @@ import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { CalendarIcon, Loader2, AlertCircle } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
-import { Task } from "@/app/types/task"
-import { getStoredApiKey, saveApiKey, clearApiKey, checkApiKey } from "@/lib/api-key"
+import { Task, TaskStatus } from "@/app/types/task"
+import { createTask, updateTask } from '@/lib/task-service'
+import { supabase } from "@/lib/supabaseClient"
 
 interface TaskDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (task: Task) => void
   initialTask?: Task
+  onSettingsClick?: () => void
+  hasApiKey: boolean
 }
 
 export function TaskDialog({ 
   open, 
   onOpenChange, 
   onSubmit, 
-  initialTask 
+  initialTask,
+  onSettingsClick,
+  hasApiKey
 }: TaskDialogProps) {
-  const [apiKey, setApiKey] = useState("")
-  const [task, setTask] = useState("")
+  const [task, setTask] = useState(initialTask?.task || "")
+  const [scheduledDate, setScheduledDate] = useState<Date | undefined>(
+    initialTask?.scheduled_time ? new Date(initialTask.scheduled_time) : new Date()
+  )
+  const [scheduledTime, setScheduledTime] = useState(
+    initialTask?.scheduled_time 
+      ? format(new Date(initialTask.scheduled_time), "HH:mm") 
+      : format(new Date(new Date().getTime() + 15 * 60000), "HH:mm")
+  )
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [scheduledDate, setScheduledDate] = useState<Date>()
-  const [scheduledTime, setScheduledTime] = useState("")
+  const [userId, setUserId] = useState<string | null>(null)
   const timeInputRef = useRef<HTMLInputElement>(null)
-  const [hasStoredKey, setHasStoredKey] = useState(false)
 
-  // Load stored API key on component mount
-  useEffect(() => {
-    setHasStoredKey(checkApiKey())
-  }, [])
-
-  // Reset form when dialog opens/closes
+  // Load user on component mount
   useEffect(() => {
     if (open) {
-      if (initialTask) {
-        setTask(initialTask.task)
-        setApiKey(initialTask.apiKey)
-        try {
-          console.log("Initial task:", initialTask)
-          const dateStr = initialTask.scheduledTime
-          console.log("Initial scheduled time:", dateStr)
-          
-          let date: Date | null = null
-          
-          // Try different date parsing approaches
-          if (dateStr) {
-            // First try direct Date parsing
-            date = new Date(dateStr)
-            
-            // If that fails, try manual parsing
-            if (isNaN(date.getTime())) {
-              const [datePart, timePart] = dateStr.split(/[T ]/)
-              const [year, month, day] = datePart.split('-').map(Number)
-              const [hours, minutes] = timePart.split(':').map(Number)
-              
-              date = new Date(year, month - 1, day, hours, minutes)
-            }
-          }
-          
-          // Validate the parsed date
-          if (!date || isNaN(date.getTime())) {
-            console.log("Invalid date, using current time")
-            date = new Date()
-          }
-          
-          console.log("Final parsed date:", date)
-          setScheduledDate(date)
-          
-          const hours = date.getHours().toString().padStart(2, '0')
-          const minutes = date.getMinutes().toString().padStart(2, '0')
-          setScheduledTime(`${hours}:${minutes}`)
-          
-        } catch (error) {
-          console.error("Error parsing date:", error)
-          const now = new Date()
-          setScheduledDate(now)
-          const hours = now.getHours().toString().padStart(2, '0')
-          const minutes = now.getMinutes().toString().padStart(2, '0')
-          setScheduledTime(`${hours}:${minutes}`)
-        }
-      } else {
-        setTask("")
-        setScheduledDate(undefined)
-        setScheduledTime("")
+      fetchUser()
+    }
+  }, [open])
+  
+  const fetchUser = async () => {
+    try {
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser()
+      setUserId(user?.id || null)
+    } catch (err) {
+      console.error('Error fetching user:', err)
+    }
+  }
+
+  // Reset form when dialog opens/closes or when initialTask changes
+  useEffect(() => {
+    if (initialTask) {
+      setTask(initialTask.task)
+      
+      if (initialTask.scheduled_time) {
+        const date = new Date(initialTask.scheduled_time)
+        setScheduledDate(date)
+        setScheduledTime(format(date, "HH:mm"))
       }
-      setError(null)
-      setIsLoading(false)
+    } else {
+      setTask("")
+      setScheduledDate(new Date())
+      setScheduledTime(format(new Date(new Date().getTime() + 15 * 60000), "HH:mm"))
     }
-  }, [open, initialTask])
-
-  const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setApiKey(e.target.value)
-  }
-
-  const handleApiKeySave = () => {
-    if (apiKey) {
-      saveApiKey(apiKey)
-      setHasStoredKey(true)
-      setApiKey("")
-    }
-  }
-
-  const handleApiKeyEdit = () => {
-    const storedKey = getStoredApiKey()
-    if (storedKey) {
-      setApiKey(storedKey)
-      setHasStoredKey(false)
-    }
-  }
-
-  const handleApiKeyDelete = () => {
-    clearApiKey()
-    setHasStoredKey(false)
-    setApiKey("")
-  }
-
-  const handleDateSelect = (date: Date | undefined) => {
-    setScheduledDate(date)
-    if (date) {
-      setTimeout(() => {
-        timeInputRef.current?.focus()
-      }, 100)
-    }
-  }
+    
+    setError(null)
+  }, [initialTask, open])
 
   const handleSubmit = async () => {
     setIsLoading(true)
@@ -152,39 +99,50 @@ export function TaskDialog({
         throw new Error("Please select a time")
       }
       
-      const storedApiKey = getStoredApiKey()
-      if (!storedApiKey && !apiKey) {
-        throw new Error("Please enter your API key")
+      // Check for API key
+      if (!hasApiKey) {
+        throw new Error("Please configure your OpenAI API key in settings")
       }
+      
       if (!task) {
         throw new Error("Please enter a task description")
       }
 
+      if (!userId) {
+        throw new Error("You must be signed in to create tasks")
+      }
+
       const [hours, minutes] = scheduledTime.split(":").map(Number)
       const scheduledDateTime = new Date(scheduledDate)
-      scheduledDateTime.setHours(hours, minutes, 0, 0) // Set seconds and milliseconds to 0
+      scheduledDateTime.setHours(hours, minutes, 0, 0)
 
       if (scheduledDateTime <= new Date()) {
         throw new Error("Scheduled time must be in the future")
       }
 
-      const newTask: Task = {
+      const taskData = {
         id: initialTask?.id || crypto.randomUUID(),
-        apiKey: storedApiKey || apiKey,
         task,
-        scheduledTime: scheduledDateTime.toISOString(),
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        status: 'scheduled'
+        scheduled_time: scheduledDateTime.toISOString(),
+        timezone: 'UTC',
+        status: 'scheduled' as TaskStatus,
+        user_id: userId
       }
 
-      await onSubmit(newTask)
+      if (initialTask) {
+        await updateTask(taskData)
+      } else {
+        await createTask(taskData)
+      }
+      
       onOpenChange(false)
+      onSubmit(taskData)
     } catch (err) {
+      console.error('Task scheduling error:', err)
       const errorMessage = err instanceof Error ? err.message : 
         typeof err === 'string' ? err : 
         "An unexpected error occurred while scheduling the task"
-      setError(errorMessage)
-      console.error('Task scheduling error:', err)
+      setError(`Error: ${errorMessage}`)
     } finally {
       setIsLoading(false)
     }
@@ -192,66 +150,44 @@ export function TaskDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto sm:max-h-[85vh]">
-        <DialogHeader className="pb-2">
-          <DialogTitle>
-            {initialTask ? "Edit Task" : "New Task"}
-          </DialogTitle>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{initialTask ? "Edit Task" : "New Task"}</DialogTitle>
           <DialogDescription>
             Schedule a task to be executed by the browser agent.
           </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4">
-          {!hasStoredKey ? (
+          {!hasApiKey ? (
             <div className="space-y-2">
-              <Label htmlFor="apiKey">OpenAI API Key</Label>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <Input
-                  id="apiKey"
-                  value={apiKey}
-                  onChange={handleApiKeyChange}
-                  type="password"
-                  placeholder="sk-..."
-                />
-                <Button onClick={handleApiKeySave} disabled={!apiKey} className="sm:w-auto w-full">
-                  Save
-                </Button>
-              </div>
-              <div className="flex items-start gap-2 text-sm text-yellow-600">
-                <AlertCircle className="h-4 w-4 shrink-0 mt-1" />
-                <span>
-                  Your API key will be stored in your browser&apos;s local storage. You can edit or delete it at any time.
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <span className="text-sm text-muted-foreground">OpenAI API key stored in your browser.</span>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={handleApiKeyEdit} className="flex-1 sm:flex-none">
-                  Edit
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={handleApiKeyDelete}
-                  className="flex-1 sm:flex-none text-red-500 hover:text-red-500 hover:border-red-500"
+              <div className="flex justify-between items-center">
+                <Label>OpenAI API Key</Label>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onSettingsClick}
                 >
-                  Delete
+                  Settings
                 </Button>
               </div>
+              <Alert className="bg-amber-50 border-amber-200 text-amber-800">
+                <AlertCircle className="h-4 w-4 text-amber-800" />
+                <AlertDescription>
+                  Please configure your OpenAI API key in settings before creating a task.
+                </AlertDescription>
+              </Alert>
             </div>
-          )}
-          
+          ) : null}
+
           <div className="space-y-2">
-            <h3 className="text-sm font-semibold">Task for the Agent</h3>
+            <Label htmlFor="task">Task for the Agent</Label>
             <Textarea
-              placeholder="Whatever you want!"
+              id="task"
               value={task}
               onChange={(e) => setTask(e.target.value)}
+              placeholder="Tell the browser agent what to do..."
               className="min-h-[100px]"
-              disabled={isLoading}
             />
           </div>
 
@@ -285,7 +221,7 @@ export function TaskDialog({
                     <Calendar
                       mode="single"
                       selected={scheduledDate}
-                      onSelect={handleDateSelect}
+                      onSelect={setScheduledDate}
                       initialFocus
                       disabled={(date) => {
                         const today = new Date()
@@ -322,7 +258,7 @@ export function TaskDialog({
           <Button 
             className="w-full"
             onClick={handleSubmit}
-            disabled={isLoading || !scheduledDate || !scheduledTime || (!hasStoredKey && !apiKey) || !task}
+            disabled={isLoading || !scheduledDate || !scheduledTime || !task}
           >
             {isLoading ? (
               <>
