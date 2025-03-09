@@ -54,7 +54,7 @@ export default function Dashboard() {
 
           setHasApiKey(keyData !== null && keyData.length > 0);
 
-        } catch (err) {
+        } catch {
           setHasApiKey(false);
         }
       }
