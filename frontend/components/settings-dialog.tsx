@@ -55,17 +55,14 @@ export function SettingsDialog({
     try {
       const encryptedData: EncryptedData = await encryptApiKey(apiKey, passphrase);
 
-      // Check if the key already exists
       const { data: existingKey } = await supabase
         .from('user_api_keys')
         .select('*')
         .eq('user_id', userId)
         .limit(1)
 
-      let result;
 
       if (existingKey && existingKey.length > 0) {
-        // If the key already exists, update it
         const { data: updatedKey, error: updateError } = await supabase
           .from('user_api_keys')
           .update({
@@ -81,9 +78,7 @@ export function SettingsDialog({
           return;
         }
 
-        result = updatedKey;
       } else {
-        // Insert new key
         const { data, error } = await supabase
           .from('user_api_keys')
           .insert([
@@ -100,21 +95,14 @@ export function SettingsDialog({
           setError('Failed to save API key');
           return;
         }
-
-        result = data;
       }
 
-      console.log('API key operation successful:', result);
-
-      // Show success message
       setSuccess('API key saved successfully');
 
-      // Update parent component if needed
       if (onSaveApiKey) {
         await onSaveApiKey(apiKey);
       }
 
-      // Clear success message after 3 seconds
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       console.error('Encryption or save failed:', err);
@@ -140,17 +128,12 @@ export function SettingsDialog({
         return;
       }
 
-      console.log('Encrypted key deleted successfully:', data);
-
-      // Show success message
       setSuccess('API key deleted successfully');
 
-      // Update parent component if needed
       if (onDeleteApiKey) {
         await onDeleteApiKey();
       }
 
-      // Clear success message after 3 seconds
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       console.error('Error deleting encrypted key:', err);
@@ -160,7 +143,6 @@ export function SettingsDialog({
     }
   }
 
-  // Mask API key for display
   const maskApiKey = (key: string) => {
     if (key.length <= 8) return "••••••••"
     return key.substring(0, 4) + "••••••••" + key.substring(key.length - 4)

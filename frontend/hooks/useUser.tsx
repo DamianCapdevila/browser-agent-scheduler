@@ -12,8 +12,8 @@ export function useUser() {
       const { data: { user } } = await supabase.auth.getUser()
 
       if (user) {
-        setUserName(user.user_metadata.full_name || 'User')
-        setUserImage(user.user_metadata.avatar_url || '/default-avatar.png')
+        setUserName(user.user_metadata.full_name)
+        setUserImage(user.user_metadata.avatar_url)
       }
     }
 

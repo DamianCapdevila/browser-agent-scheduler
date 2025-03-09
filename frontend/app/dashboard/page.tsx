@@ -38,31 +38,23 @@ export default function Dashboard() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [hasApiKey, setHasApiKey] = useState(false)
 
-  // Get current user and check if they have an API key
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser()
       setUser({ id: data.user?.id || "", name: data.user?.user_metadata?.name || "" })
 
-      // Check if the user has an API key stored
       if (data.user) {
         try {
-          console.log("Checking API key for user:", data.user.id);
 
-          // Correctly query from user_api_keys table
           const { data: keyData } = await supabase
             .from('user_api_keys')
             .select('id')
             .eq('user_id', data.user.id)
             .limit(1)
 
-          console.log("Key data:", keyData);
-          // Safely set hasApiKey to true only if we have actual results
           setHasApiKey(keyData !== null && keyData.length > 0);
 
         } catch (err) {
-          console.error('Error checking for API key:', err)
-          // Ensure hasApiKey is false when there's an error
           setHasApiKey(false);
         }
       }
@@ -71,7 +63,7 @@ export default function Dashboard() {
     getUser()
   }, [])
 
-  // Fetch tasks, api key & setup real-time subscription
+
   useEffect(() => {
     if (DEMO_MODE) {
       setTasks(mockTasks)
@@ -80,28 +72,23 @@ export default function Dashboard() {
     }
 
     if (user) {
-      // Initial fetch
+      
       fetchTasks()
-      // Setup real-time subscription with optimized updates
       const taskSubscription = supabase
         .channel('tasks-changes')
         .on('postgres_changes', {
-          event: '*', // Listen for all changes (insert, update, delete)
+          event: '*',
           schema: 'public',
           table: 'tasks',
         }, (payload) => {
-          console.log('Realtime event received:', payload.eventType)
-
-          // Handle each event type with targeted updates
+          
           switch (payload.eventType) {
             case 'INSERT':
-              // Add the new task to the list without full refresh
               const newTask = payload.new as Task;
               setTasks(currentTasks => [...currentTasks, newTask]);
               break;
 
             case 'UPDATE':
-              // Update the specific task in the list
               const updatedTask = payload.new as Task;
               setTasks(currentTasks =>
                 currentTasks.map(task =>
@@ -111,7 +98,6 @@ export default function Dashboard() {
               break;
 
             case 'DELETE':
-              // Remove the specific task from the list
               const deletedTaskId = payload.old.id;
               setTasks(currentTasks =>
                 currentTasks.filter(task => task.id !== deletedTaskId)
@@ -128,7 +114,6 @@ export default function Dashboard() {
           schema: 'public',
           table: 'user_api_keys',
         }, (payload) => {
-          console.log('Realtime API key event received:', payload.eventType);
           if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
             setHasApiKey(true);
           }
@@ -138,8 +123,6 @@ export default function Dashboard() {
         })
         .subscribe();
       
-
-      // Cleanup subscription on unmount
       return () => {
         taskSubscription.unsubscribe()
         apiKeySubscription.unsubscribe()
@@ -161,7 +144,6 @@ export default function Dashboard() {
 
   const handleSubmitTask = async (task: Task) => {
     if (DEMO_MODE) {
-      // Simulate task creation in demo mode
       const newTask = {
         ...task,
         status: 'scheduled' as const,
@@ -172,12 +154,9 @@ export default function Dashboard() {
     }
 
     try {
-      // No need to send a request - the task-dialog now handles
-      // the Supabase operations directly
-      await fetchTasks() // Refresh the task list
+      await fetchTasks()  
       setIsDialogOpen(false)
     } catch (error) {
-      console.error(`Failed to ${task.id ? 'update' : 'add'} task:`, error)
       throw error
     }
   }
@@ -188,7 +167,6 @@ export default function Dashboard() {
       return
     }
 
-    // Set the task ID and open the confirmation dialog
     setTaskToDelete(taskId)
     setDeleteConfirmOpen(true)
   }
@@ -198,7 +176,6 @@ export default function Dashboard() {
 
     try {
       await deleteTask(taskToDelete)
-      // Use functional update to avoid stale state
       setTasks(currentTasks => currentTasks.filter(task => task.id !== taskToDelete))
     } catch (error) {
       console.error('Failed to delete task:', error)
@@ -218,22 +195,12 @@ export default function Dashboard() {
     setIsDialogOpen(false)
   }
 
-  // Handler for saving API key - integrate with your Supabase logic
-  const handleSaveApiKey = async (apiKey: string) => {
-    // This is just a UI placeholder - replace with your actual implementation
-    console.log("Saving API key:", apiKey)
-
-    // You would implement your Supabase logic here
-    // Example: await supabase.from('profiles').update({ api_key: apiKey }).eq('id', user.id)
+  const handleSaveApiKey = async () => {
+    setHasApiKey(true)
   }
 
-  // Handler for deleting API key - integrate with your Supabase logic
   const handleDeleteApiKey = async () => {
-    // This is just a UI placeholder - replace with your actual implementation
-    console.log("Deleting API key")
-
-    // You would implement your Supabase logic here
-    // Example: await supabase.from('profiles').update({ api_key: null }).eq('id', user.id)
+    setHasApiKey(false)
   }
 
   return (
@@ -281,9 +248,9 @@ export default function Dashboard() {
           open={isSettingsOpen}
           onOpenChange={setIsSettingsOpen}
           apiKey={hasApiKey ? "API Key Available" : "API Key Not Available"}
+          userId={user?.id || ""}
           onSaveApiKey={handleSaveApiKey}
           onDeleteApiKey={handleDeleteApiKey}
-          userId={user?.id || ""}
         />
 
         <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
