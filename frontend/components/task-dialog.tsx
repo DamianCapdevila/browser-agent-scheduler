@@ -44,7 +44,7 @@ export function TaskDialog({
   const [scheduledTime, setScheduledTime] = useState(
     initialTask?.scheduled_time 
       ? format(new Date(initialTask.scheduled_time), "HH:mm") 
-      : format(new Date(new Date().getTime() + 15 * 60000), "HH:mm")
+      : format(new Date(new Date().getTime()), "HH:mm")
   )
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -81,7 +81,7 @@ export function TaskDialog({
     } else {
       setTask("")
       setScheduledDate(new Date())
-      setScheduledTime(format(new Date(new Date().getTime() + 15 * 60000), "HH:mm"))
+      setScheduledTime(format(new Date(new Date().getTime()), "HH:mm"))
     }
     
     setError(null)
