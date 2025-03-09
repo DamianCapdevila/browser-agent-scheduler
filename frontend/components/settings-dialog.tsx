@@ -63,7 +63,7 @@ export function SettingsDialog({
 
 
       if (existingKey && existingKey.length > 0) {
-        const { data: updatedKey, error: updateError } = await supabase
+        const { error: updateError } = await supabase
           .from('user_api_keys')
           .update({
             encrypted_key: encryptedData.encrypted,
@@ -73,13 +73,12 @@ export function SettingsDialog({
           .eq('user_id', userId)
 
         if (updateError) {
-          console.error('Error updating encrypted key:', updateError);
           setError('Failed to update API key');
           return;
         }
 
       } else {
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('user_api_keys')
           .insert([
             {
@@ -91,7 +90,6 @@ export function SettingsDialog({
           ]);
 
         if (error) {
-          console.error('Error storing encrypted key:', error);
           setError('Failed to save API key');
           return;
         }
@@ -104,8 +102,7 @@ export function SettingsDialog({
       }
 
       setTimeout(() => setSuccess(null), 3000);
-    } catch (err) {
-      console.error('Encryption or save failed:', err);
+    } catch {
       setError('Failed to save API key');
     } finally {
       setLoading(false);
@@ -117,13 +114,12 @@ export function SettingsDialog({
     setError(null);
 
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('user_api_keys')
         .delete()
         .eq('user_id', userId)
 
       if (error) {
-        console.error('Error deleting encrypted key:', error);
         setError('Failed to delete API key');
         return;
       }
@@ -135,8 +131,7 @@ export function SettingsDialog({
       }
 
       setTimeout(() => setSuccess(null), 3000);
-    } catch (err) {
-      console.error('Error deleting encrypted key:', err);
+    } catch {
       setError('Failed to delete API key');
     } finally {
       setLoading(false);
